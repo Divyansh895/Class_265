@@ -3,7 +3,8 @@ import os
 from flask import  Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 # import additional libraries below
-
+import cv2
+import numpy as np
 
 
 app = Flask(__name__)
@@ -19,7 +20,9 @@ def upload_image():
     file = request.files['file']
     filename = secure_filename(file.filename)
     # write the read and write function on image below 
-    
+    file_data = make_grayscale(file.read())
+    with open(os.path.join('static/', filename), 'wb') as f:
+        f.write(file_data)
 
 
         # ends here
@@ -29,6 +32,22 @@ def upload_image():
 
 
 # Write the make_grayscale() function below
+def make_grayscale(input_image):
+
+    image_array = np.fromstring(input_image, dtytpe='uint8')
+    print('Image Array:', image_array)
+
+    decode_array_to_img = cv2.imdecode(image_array, cv2.IMREAD_UNCHANGED)
+    print('Decode values of Image:', decode_array_to_img)
+
+    converted_gray_img = cv2.cvtColor(decode_array_to_img, cv2.COLOR_RGB2GRAY)
+    status, output_image = cv2.imdecode('.PNG', converted_gray_img)
+    print('Status:', status)
+
+
+    return output_image
+
+
 
 
 
